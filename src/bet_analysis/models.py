@@ -106,9 +106,13 @@ class WeatherInfo(_Frozen):
 class MarketOdds(_Frozen):
     """Snapshot of pre-match market odds across the major books.
 
-    Decimal odds. Missing markets remain None.
+    Decimal odds. Missing markets remain None. Sport-aware:
+    football fields (BTTS, O/U 2.5, cards, corners) and basketball
+    fields (spread, total, moneyline) coexist as optional. Whichever
+    the sport supports gets populated.
     """
 
+    # --- Football (and similar) ---
     one_x_two_home: float | None = None
     one_x_two_draw: float | None = None
     one_x_two_away: float | None = None
@@ -126,6 +130,19 @@ class MarketOdds(_Frozen):
 
     corners_over_9_5: float | None = None
     corners_under_9_5: float | None = None
+
+    # --- Basketball / two-way sports (NBA, EuroLeague, etc.) ---
+    moneyline_home: float | None = None
+    moneyline_away: float | None = None
+
+    spread_home_line: float | None = None  # e.g. -5.5
+    spread_home_odds: float | None = None
+    spread_away_line: float | None = None
+    spread_away_odds: float | None = None
+
+    total_line: float | None = None  # e.g. 215.5 for NBA
+    total_over_odds: float | None = None
+    total_under_odds: float | None = None
 
     bookmaker: str | None = None
 

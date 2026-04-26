@@ -24,6 +24,18 @@ def _required(name: str) -> str:
     return val
 
 
+def _get_float(name: str, default: float) -> float:
+    raw = _get(name)
+    if raw is None:
+        return default
+    try:
+        return float(raw)
+    except ValueError as e:
+        raise RuntimeError(
+            f"Env var {name}={raw!r} is not a valid float (default {default})"
+        ) from e
+
+
 @dataclass(frozen=True)
 class Config:
     # Data providers
@@ -60,7 +72,7 @@ class Config:
             claude_model=_get("CLAUDE_MODEL", "claude-sonnet-4-6") or "claude-sonnet-4-6",
             gpt_model=_get("GPT_MODEL", "gpt-4o") or "gpt-4o",
             gemini_model=_get("GEMINI_MODEL", "gemini-2.5-pro") or "gemini-2.5-pro",
-            min_confidence_for_bet=float(_get("MIN_CONFIDENCE_FOR_BET", "0.55") or "0.55"),
+            min_confidence_for_bet=_get_float("MIN_CONFIDENCE_FOR_BET", 0.55),
             cache_db_path=_get("CACHE_DB_PATH", "./cache.db") or "./cache.db",
             log_level=_get("LOG_LEVEL", "INFO") or "INFO",
         )
